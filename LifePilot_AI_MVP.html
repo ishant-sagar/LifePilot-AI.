@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifePilot AI | Personal Life & Study Planner</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#172033;--muted:#64748b;--primary:#405cf5;--line:#e5eaf2;--green:#15966a;--orange:#e78b22}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(120deg,#2439a8,#596cf6);color:white;padding:28px 5vw 32px}
+header .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:.85}h1{margin:8px 0;font-size:clamp(28px,4vw,42px)}header p{margin:0;opacity:.9}
+main{max-width:1120px;margin:24px auto;padding:0 18px 40px}.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 6px 22px #23345a0a;margin-bottom:18px}
+h2{font-size:19px;margin:0 0 14px}h3{font-size:15px;margin:0 0 10px}.muted{color:var(--muted);font-size:13px;line-height:1.5}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
+label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin:10px 0 6px}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid #d8dfeb;border-radius:9px;background:#fff;color:var(--ink);font:inherit;font-size:14px}
+button{border:0;border-radius:9px;padding:11px 14px;background:var(--primary);color:#fff;font-weight:700;cursor:pointer;margin-top:12px}
+button:hover{filter:brightness(.96)}button.secondary{background:#edf1ff;color:#3347c9}button.danger{background:#fff0f0;color:#b42318;padding:7px 10px;margin:0}
+button.small{padding:7px 10px;margin:0;font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:14px;border-radius:12px;background:#f5f7ff}.stat strong{font-size:25px;display:block}.stat span{font-size:12px;color:var(--muted)}
+.task{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.task:last-child{border-bottom:0}.task input[type=checkbox]{width:18px;min-width:18px;margin-top:2px}.task .body{flex:1}.task .title{font-weight:700;font-size:14px}.task .meta{font-size:12px;color:var(--muted);margin-top:4px}.done .title{text-decoration:line-through;color:#8792a5}
+.badge{display:inline-block;background:#edf1ff;color:#3b4cc0;border-radius:20px;padding:4px 8px;font-size:11px;font-weight:700;margin:2px 4px 2px 0}.empty{padding:20px;text-align:center;color:var(--muted);font-size:13px;background:#f8faff;border-radius:10px}
+.suggestion{background:#f0fbf6;border:1px solid #d6f4e5;padding:13px;border-radius:11px;margin-top:10px;font-size:13px;line-height:1.55}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.card{padding:16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="tag">Your personal productivity companion</div>
+  <h1>LifePilot AI <span style="font-size:16px;vertical-align:middle;background:#ffffff26;padding:5px 9px;border-radius:20px">MVP</span></h1>
+  <p>Plan your day. Balance your life. Make steady progress.</p>
+</header>
+<main>
+  <section class="card">
+    <h2>👋 Set up your day</h2>
+    <p class="muted">Choose your learning path. Your tasks are saved in this browser on this device.</p>
+    <div class="row">
+      <div><label for="studentName">Your name (optional)</label><input id="studentName" placeholder="e.g. Student"></div>
+      <div><label for="field">Your current focus</label><select id="field"><option>AI/ML & CSE</option><option>Web Development</option><option>JEE Preparation</option><option>NEET Preparation</option><option>Other Student</option></select></div>
+      <div><label for="available">Free study time today</label><select id="available"><option value="1">1 hour</option><option value="2" selected>2 hours</option><option value="3">3 hours</option><option value="4">4 hours</option><option value="5">5+ hours</option></select></div>
+    </div>
+    <button onclick="saveProfile()">Save preferences</button> <span id="profileMsg" class="muted"></span>
+  </section>
+
+  <div class="grid">
+    <div>
+      <section class="card">
+        <h2>🗓️ Add a task or daily habit</h2>
+        <form id="taskForm">
+          <label for="taskTitle">Activity / task</label><input id="taskTitle" required maxlength="100" placeholder="e.g. Python practice or feed street dogs">
+          <div class="row">
+            <div><label for="taskType">Category</label><select id="taskType"><option>Study</option><option>College</option><option>Career</option><option>Health / Sports</option><option>Meals</option><option>Family</option><option>Personal habit</option><option>Other</option></select></div>
+            <div><label for="taskTime">Preferred time (optional)</label><input id="taskTime" type="time"></div>
+            <div><label for="taskDuration">Duration</label><select id="taskDuration"><option value="10">10 min</option><option value="15">15 min</option><option value="20">20 min</option><option value="30" selected>30 min</option><option value="45">45 min</option><option value="60">1 hour</option><option value="90">1.5 hours</option><option value="120">2 hours</option></select></div>
+          </div>
+          <div class="row">
+            <div><label for="priority">Priority</label><select id="priority"><option>High</option><option selected>Medium</option><option>Low</option></select></div>
+            <div><label for="taskDate">Date</label><input id="taskDate" type="date" required></div>
+          </div>
+          <button type="submit">+ Add to my plan</button>
+          <button type="button" class="secondary" onclick="addSampleRoutine()">Add sample daily routine</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>✅ Today's plan</h2>
+        <div class="row" style="align-items:center"><p id="todayLabel" class="muted"></p><button class="secondary small" onclick="showAll=!showAll;renderTasks()">Show all dates</button></div>
+        <div id="taskList"></div>
+      </section>
+    </div>
+    <div>
+      <section class="card">
+        <h2>📊 Progress at a glance</h2>
+        <div class="stats">
+          <div class="stat"><strong id="totalCount">0</strong><span>Total tasks</span></div>
+          <div class="stat"><strong id="doneCount">0</strong><span>Completed</span></div>
+          <div class="stat"><strong id="minutesCount">0m</strong><span>Planned time</span></div>
+        </div>
+        <div style="margin-top:14px;background:#e9eef8;height:9px;border-radius:10px;overflow:hidden"><div id="progressBar" style="height:100%;width:0;background:var(--green);transition:width .2s"></div></div>
+        <p id="progressText" class="muted">Add a task to start tracking your day.</p>
+      </section>
+
+      <section class="card">
+        <h2>🧭 Smart suggestions</h2>
+        <p class="muted">These are starter rule-based suggestions, not live AI-generated advice yet.</p>
+        <button onclick="makeSuggestions()">Suggest my next steps</button>
+        <div id="suggestions"><div class="empty">Save your focus and add tasks, then generate suggestions.</div></div>
+      </section>
+
+      <section class="card">
+        <h2>📝 Daily reflection</h2>
+        <label for="journal">What went well? What will you improve tomorrow?</label>
+        <textarea id="journal" rows="4" placeholder="Write a short note about your day..."></textarea>
+        <button onclick="saveJournal()">Save journal note</button> <span id="journalMsg" class="muted"></span>
+      </section>
+      <section class="card">
+        <h2>🔔 Reminders</h2>
+        <p class="muted">You can enable browser notifications for tasks with a preferred time. Keep this page open for reminders to work.</p>
+        <button class="secondary" onclick="enableReminders()">Enable browser reminders</button>
+        <span id="reminderMsg" class="muted"></span>
+      </section>
+    </div>
+  </div>
+  <footer>LifePilot AI · Student-built prototype · Data stays in this browser using local storage.</footer>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const today = () => new Date().toLocaleDateString('en-CA');
+let tasks = JSON.parse(localStorage.getItem('lifepilot_tasks') || '[]');
+let profile = JSON.parse(localStorage.getItem('lifepilot_profile') || '{"name":"","field":"AI/ML & CSE","available":"2"}');
+let showAll = false;
+let remindersEnabled = false;
+$('taskDate').value = today();
+$('studentName').value = profile.name || '';
+$('field').value = profile.field || 'AI/ML & CSE';
+$('available').value = profile.available || '2';
+$('journal').value = localStorage.getItem('lifepilot_journal_' + today()) || '';
+$('todayLabel').textContent = 'Date: ' + today();
+function persist(){localStorage.setItem('lifepilot_tasks',JSON.stringify(tasks));}
+function saveProfile(){profile={name:$('studentName').value.trim(),field:$('field').value,available:$('available').value};localStorage.setItem('lifepilot_profile',JSON.stringify(profile));$('profileMsg').textContent='Saved!';makeSuggestions();}
+$('taskForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ tasks.push({id:Date.now()+Math.random(),title:$('taskTitle').value.trim(),type:$('taskType').value,time:$('taskTime').value,duration:Number($('taskDuration').value),priority:$('priority').value,date:$('taskDate').value,done:false,reminded:false});
+ persist();$('taskTitle').value='';$('taskTime').value='';renderTasks();makeSuggestions();
+});
+function addSampleRoutine(){
+ const d=today();
+ const samples=[
+  ['Breakfast','Meals','08:00',20,'High'],['College / classes','College','09:00',120,'High'],
+  ['Python or subject practice','Study','18:00',45,'High'],['Volleyball','Health / Sports','18:50',45,'Medium'],
+  ['Feed street dogs','Other','19:45',15,'Medium'],['Dinner','Meals','20:15',30,'High'],
+  ['Walk after dinner','Health / Sports','20:50',15,'Medium'],['Call parents','Family','21:15',15,'High'],
+  ['Write daily diary','Personal habit','21:35',10,'Low']
+ ];
+ const existing=new Set(tasks.filter(t=>t.date===d).map(t=>t.title.toLowerCase()));
+ samples.forEach(s=>{if(!existing.has(s[0].toLowerCase()))tasks.push({id:Date.now()+Math.random(),title:s[0],type:s[1],time:s[2],duration:s[3],priority:s[4],date:d,done:false,reminded:false});});
+ persist();renderTasks();makeSuggestions();
+}
+function toggleTask(id){const t=tasks.find(x=>x.id===id);if(t){t.done=!t.done;persist();renderTasks();makeSuggestions();}}
+function deleteTask(id){tasks=tasks.filter(x=>x.id!==id);persist();renderTasks();makeSuggestions();}
+function renderTasks(){
+ const list=$('taskList');const arr=tasks.filter(t=>showAll||t.date===today()).sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
+ if(!arr.length){list.innerHTML='<div class="empty">No tasks yet. Add a task or use “Add sample daily routine”.</div>';}
+ else list.innerHTML=arr.map(t=>`<div class="task ${t.done?'done':''}"><input aria-label="Mark complete" type="checkbox" ${t.done?'checked':''} onchange="toggleTask(${t.id})"><div class="body"><div class="title">${escapeHtml(t.title)}</div><div class="meta">${escapeHtml(t.date)} ${t.time?'· '+escapeHtml(t.time):''} · ${t.duration} min · ${escapeHtml(t.type)}</div><span class="badge">${escapeHtml(t.priority)} priority</span></div><button class="danger" onclick="deleteTask(${t.id})" aria-label="Delete task">×</button></div>`).join('');
+ const todayTasks=tasks.filter(t=>t.date===today());const done=todayTasks.filter(t=>t.done).length;const mins=todayTasks.reduce((n,t)=>n+t.duration,0);
+ $('totalCount').textContent=todayTasks.length;$('doneCount').textContent=done;$('minutesCount').textContent=mins>=60?Math.floor(mins/60)+'h '+mins%60+'m':mins+'m';
+ $('progressBar').style.width=(todayTasks.length?done/todayTasks.length*100:0)+'%';
+ $('progressText').textContent=todayTasks.length?`${done} of ${todayTasks.length} tasks completed (${Math.round(done/todayTasks.length*100)}%). Remember to leave time for breaks and rest.`:'Add a task to start tracking your day.';
+}
+function makeSuggestions(){
+ const field=$('field').value, free=Number($('available').value||2), pending=tasks.filter(t=>t.date===today()&&!t.done);
+ let ideas=[];
+ if(pending.some(t=>t.priority==='High'))ideas.push('Start with one pending high-priority task before lower-priority activities.');
+ else ideas.push('Choose one important task for your next focused session, then take a short break.');
+ if(field==='AI/ML & CSE')ideas.push('Career target: spend 25–45 minutes on Python practice or Maths for CSE, then record what you learned.');
+ else if(field==='Web Development')ideas.push('Career target: build one small HTML/CSS/JavaScript feature and save the progress in GitHub.');
+ else if(field==='JEE Preparation')ideas.push('Study target: revise one weak topic and solve a short set of practice questions.');
+ else if(field==='NEET Preparation')ideas.push('Study target: revise one Biology/Chemistry/Physics topic and test yourself with practice questions.');
+ else ideas.push('Learning target: choose one subject, revise a small topic, and note your next action.');
+ if(free>=2)ideas.push('Long-term target: use one available session this week for a small project, portfolio, or exam review.');
+ if(pending.length===0)ideas.push('Your current plan has no pending tasks for today. Review tomorrow’s priorities or enjoy your free time.');
+ $('suggestions').innerHTML=ideas.map(x=>`<div class="suggestion">• ${escapeHtml(x)}</div>`).join('');
+}
+function saveJournal(){localStorage.setItem('lifepilot_journal_'+today(),$('journal').value);$('journalMsg').textContent='Saved in this browser.';}
+async function enableReminders(){
+ if(!('Notification' in window)){$('reminderMsg').textContent='Notifications are not supported by this browser.';return;}
+ const p=await Notification.requestPermission();remindersEnabled=p==='granted';
+ $('reminderMsg').textContent=remindersEnabled?'Enabled. Keep this page open for timed reminders.':'Permission not granted.';
+ if(remindersEnabled)checkReminders();
+}
+function checkReminders(){
+ if(!remindersEnabled)return;const now=new Date();const hm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+ tasks.filter(t=>t.date===today()&&t.time===hm&&!t.done&&!t.reminded).forEach(t=>{new Notification('LifePilot reminder',{body:'Time for: '+t.title});t.reminded=true;persist();});
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+renderTasks();makeSuggestions();setInterval(checkReminders,30000);
+</script>
+</body>
+</html>
